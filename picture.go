@@ -471,8 +471,7 @@ func (f *File) GetPictures(sheet, cell string) ([]Picture, error) {
 	}
 	target := f.getSheetRelationshipsTargetByID(sheet, ws.Drawing.RID)
 	drawingXML := strings.TrimPrefix(strings.ReplaceAll(target, "..", "xl"), "/")
-	drawingRelationships := strings.ReplaceAll(
-		strings.ReplaceAll(target, "../drawings", "xl/drawings/_rels"), ".xml", ".xml.rels")
+	drawingRelationships := strings.ReplaceAll(strings.ReplaceAll(target, "../drawings", "xl/drawings/_rels"), ".xml", ".xml.rels")
 
 	return f.getPicture(row, col, drawingXML, drawingRelationships)
 }
@@ -623,8 +622,10 @@ func (f *File) extractDecodeCellAnchor(anchor *xdrCellAnchor, drawingRelationshi
 	if deCellAnchor.From != nil && deCellAnchor.Pic != nil {
 		if cond(deCellAnchor.From) {
 			drawRel = f.getDrawingRelationships(drawingRelationships, deCellAnchor.Pic.BlipFill.Blip.Embed)
-			if _, ok := supportedImageTypes[strings.ToLower(filepath.Ext(drawRel.Target))]; ok {
-				cb(deCellAnchor, drawRel)
+			if drawRel != nil {
+				if _, ok := supportedImageTypes[strings.ToLower(filepath.Ext(drawRel.Target))]; ok {
+					cb(deCellAnchor, drawRel)
+				}
 			}
 		}
 	}
