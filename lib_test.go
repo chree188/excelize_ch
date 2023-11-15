@@ -1,4 +1,4 @@
-package excelize
+package excelize_ch
 
 import (
 	"archive/zip"
